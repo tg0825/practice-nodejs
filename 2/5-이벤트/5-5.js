@@ -1,16 +1,13 @@
-process.on('exit', function (code) {
-    console.log('bye~');
+// 5.5 이벤트 생성
+// EventEmitter
+
+// EventEmitter 객체를 생성합니다.
+var EventEmitter = require('events')
+var custom = new EventEmitter();
+
+// 이벤트를 연결합니다.
+custom.on('tick', function (code) {
+    console.log('이벤트를 실행합니다.');
 });
 
-// 이벤트를 실행하는 메서드
-process.emit('exit');
-
-// 프로그램을 종료하는 메서드
-process.exit();
-
-process.emit('exit');
-process.emit('exit');
-process.emit('exit');
-process.emit('exit');
-
-console.log('progress');
+custom.emit('tick');
