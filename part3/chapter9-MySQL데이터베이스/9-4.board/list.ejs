@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>list</title>
+    <script src="https://unpkg.com/jquery@1.12.4/dist/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <h1>list</h1>
+    <a href="/insert">insert data</a>
+    <table>
+        <tr>
+            <th>delete</th>
+            <th>edirt</th>
+            <th>id</th>
+            <th>name</th>
+            <th>model number</th>
+            <th>series</th>
+        </tr>
+        <% data.forEach(function (item, index) {%>
+        <tr>
+            <td> <a href="/delete/<%= item.id %>">delete</a> </td>
+            <td> <a href="/edit/<%= item.id %>">edit</a> </td>
+            <td><%= item.id %> </td>
+            <td><%= item.name %> </td>
+            <td><%= item.modelnumber %> </td>
+            <td><%= item.series %> </td>
+        </tr>
+        <%});%>
+    </table>
+<script>
+</script>
+</body>
+</html>
