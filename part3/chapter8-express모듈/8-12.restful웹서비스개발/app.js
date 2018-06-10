@@ -56,21 +56,47 @@ app.use(bodyParser.urlencoded({
 
 // 라우터 설정
 app.get('/user', function (req, res) {
-
-});
-app.get('/user/:id', function () {
-
-});
-app.post('/user', function () {
-
-});
-app.put('/user/:id', function () {
-
-});
-app.delete('/user/:id', function () {
-
+    res.send(DummyDB.get());
 });
 
-app.listen(8888, function () {
+app.get('/user/:id', function (req, res) {
+    res.send(DummyDB.get(req.params.id));
+});
+
+// 등록
+app.post('/user', function (req, res) {
+    var name = req.body.name;
+    var region = req.body.region;
+
+    if (name && region) {
+        res.send(DummyDB.insert({
+            name: name,
+            region: region
+        }));
+    } else {
+        throw new Error('error');
+    }
+});
+
+// 수정
+app.put('/user/:id', function (req, res) {
+    var id = req.params.id;
+    var name = req.body.name;
+    var region = req.body.region;
+
+    var item = DummyDB.get(id);
+    item.name = name || item.name;
+    item.region = region || item.region;
+
+    // 응답
+    res.send(item);
+});
+
+// 삭제
+app.delete('/user/:id', function (req, res) {
+    res.send(DummyDB.remove(req.params.id));
+});
+
+app.listen(8888, function (req, res) {
     console.log('run');
 });
