@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>socket</title>
+    <script src="https://unpkg.com/jquery@1.12.4/dist/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <input type="text" id="text">
+    <input type="button" id="button" value="echo">
+<!-- 아래 파일은 생성하지 않아도 socket.io 모듈을 사용하면 파일이 자동으로 등록 된다.c -->
+<!-- 파일을 확인할 수 있다. http://127.0.0.1:8888/socket.io/socket.io.js -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    window.onload = function () {
+        // 소켓 연결
+        var socket = io.connect();
+
+        // 소켓 이벤트 연결
+        socket.on('smart', function (data) {
+            alert(data);
+        });
+
+        // 문서 객체 이벤트 연결
+        document.getElementById('button').onclick = function () {
+            var text = document.getElementById('text').value;
+
+            socket.emit('rint', text);
+        };
+    };
+</script>
+</body>
+</html>
