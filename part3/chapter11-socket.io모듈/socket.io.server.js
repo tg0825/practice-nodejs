@@ -13,3 +13,5 @@ var server = http.createServer(function (req, res) {
 }).listen(8888, function () {
     console.log('server run');
 });
+
+var io = socketio.listen(server);
