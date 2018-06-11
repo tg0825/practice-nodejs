@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>room</title>
+    <script src="https://unpkg.com/jquery@1.12.4/dist/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <button id="button">emit</button>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+window.onload = function () {
+    var room = prompt('방 이름을 입력하세요.', '');
+    var socket = io.connect();
+
+    // 소켓 이벤트를 연결합니다.
+    socket.emit('join', room);
+    socket.on('message', function (data) {
+        $('<p>' + data + '</p>').appendTo('body');
+    });
+
+    document.getElementById('button').onclick = function () {
+        socket.emit('message', 'socket.io room message');
+    };
+}
+</script>
+</body>
+</html>
