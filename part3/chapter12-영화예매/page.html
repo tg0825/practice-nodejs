@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>title</title>
+    <script src="https://unpkg.com/jquery@1.12.4/dist/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+    <style>
+    .line {
+        overflow: hidden;
+    }
+
+    .seat {
+        float: left;
+        width: 30px;
+        height: 30px;
+        border-radius: 3px;
+        margin: 2px;
+    }
+
+    .enable {
+        background: gray;
+    }
+
+    .enable:hover {
+        background: black;
+    }
+
+    .disable {
+        background: red;
+    }
+    </style>
+</head>
+<body>
+text..
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var socket = io.connect();
+
+socket.on('reserve', function (data) {
+    var $target = $('div[data-x=' + data.x + '][data-y=' + data.y + ']');
+    $target.removeClass('enable');
+    $target.addClass('disable');
+});
+
+$(function () {
+    var onClickSeat = function () {
+        var x = $(this).attr('data-x');
+        var y = $(this).attr('data-y');
+
+        if (confirm('예약 하시겠습니까?')) {
+            $(this).off('click');
+            socket.emit('reserve', {
+                x: x,
+                y: y
+            });
+        } else {
+            // alert('취소')
+        }
+    }
+
+    $.getJSON('/seats', {dummy: new Date().getTime()}, function (data) {
+        $.each(data, function (indexY, line) {
+            var $line = $('<div></div>').addClass('line');
+            $.each(line, function (indexX, seat) {
+                var $output = $('<div></div>', {
+                    'class': 'seat',
+                    'data-x': indexX,
+                    'data-y': indexY
+                }).appendTo($line);
+
+                // 좌석이 비어있으면 enable클래스와 click 리스너 추가
+                if (seat == 1) {
+                    $output.addClass('enable').on('click', onClickSeat);
+                // 좌석이 사용 불가면 disable 클래스 추가
+                } else if (seat == 2) {
+                    $output.addClass('disable');
+                }
+            });
+
+            // 문서 객체 추가
+            $line.appendTo('body');
+        });
+    });
+});
+</script>
+</body>
+</html>
