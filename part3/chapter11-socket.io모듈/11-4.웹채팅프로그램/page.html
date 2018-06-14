@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>title</title>
+    <script src="https://unpkg.com/jquery@1.12.4/dist/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+text..
+<input id="name" type="text">
+<input id="message" type="text">
+<button>button</button>
+<ul id="content"></ul>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+$(document).ready(function () {
+    var socket = io.connect();
+
+    socket.on('message', function (data) {
+        var output = `<li>
+            <h3>${data.name}</h3>
+            <p>${data.message}</p>
+            <p>${data.date}</p>
+            </li>`;
+        $(output).prependTo('#content');
+    });
+
+    $('button').on('click', function () {
+        socket.emit('message', {
+            name: $('#name').val(),
+            message: $('#message').val(),
+            date: new Date().toUTCString()
+        });
+    });
+});
+</script>
+</body>
+</html>
