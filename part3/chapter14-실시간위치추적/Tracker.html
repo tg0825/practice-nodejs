@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>title</title>
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="https://unpkg.com/jquery@1.12.4/dist/jquery.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div data-role="page">
+        <div data-role="header" data-theme="b">
+            <h1>location tracker</h1>
+        </div>
+
+        <div data-role="content">
+            <div data-role="fieldcontain">
+                <label for="textinput">name</label>
+                <input type="text" id="textinput">
+            </div>
+
+            <a href="#tracker" class="ui-btn ui-btn-b">start track</a>
+        </div>
+    </div>
+
+    <div data-role="page" id="tracker">
+        <div data-role="header" data-theme="b">
+            <h1>location tracker</h1>
+        </div>
+        <div data-role="content">
+            <ul id="listview" data-role="listview" data-inset="true">
+
+            </ul>
+        </div>
+    </div>
+<script>
+$(function () {
+    $('a').click(function () {
+        var socket = io.connect();
+        var name = $('#textinput').val();
+        socket.emit('join', $('#textinput').val());
+
+        // 소켓 이벤트 연결
+        socket.on('receive', function (data) {
+            var latitude = data.latitude;
+            var longitude = data.longitude;
+
+            var output = `
+                <h3>latitude ${latitude}</h3>
+                <h3>longitude ${longitude}</h3>
+                <p>${data.date}</p>`;
+
+            $('<li></li>').append(output).prependTo('#listview');
+
+            // 문서 객체 개수 제한
+            var content = $('#content');
+            if (content.children().length > 7) {
+                content.children().last().remove();
+            }
+
+            $('#listview').listview('refresh');
+        });
+
+        navigator.geolocation.watchPosition(function (position) {
+            socket.emit('location', {
+                name: name,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            });
+        }, function (error) {
+            alert(error.message);
+        });
+    });
+});
+</script>
+</body>
+</html>
